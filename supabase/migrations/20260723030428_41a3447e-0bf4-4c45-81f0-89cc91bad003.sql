@@ -1,0 +1,1 @@
+DROP POLICY IF EXISTS "bank masked merchant read" ON public.merchant_bank_accounts;
