@@ -1,20 +1,15 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { SiteLayout } from "@/components/site/SiteLayout";
 import { Hero } from "@/components/site/Hero";
-import { PaymentMethodsSection } from "@/components/site/PaymentMethodsSection";
-import { InternationalSection } from "@/components/site/InternationalSection";
+import { ServicesGrid } from "@/components/site/ServicesGrid";
+import { WhyChoose } from "@/components/site/WhyChoose";
+import { StatsCounter } from "@/components/site/StatsCounter";
+import { PaymentPartners } from "@/components/site/PaymentPartners";
+import { Testimonials } from "@/components/site/Testimonials";
+import { FAQ } from "@/components/site/FAQ";
+import { ContactSection } from "@/components/site/ContactSection";
 import { CTASection } from "@/components/site/CTASection";
-import {
-  PaymentDemoSection,
-  PaymentLinksSection,
-  DeveloperSection,
-  DashboardPreviewSection,
-  SecuritySection,
-  BusinessSection,
-  AnalyticsSection,
-  PricingPreviewSection,
-  MetricsStrip,
-} from "@/components/site/HomeSections";
+import { PaymentLinksSection } from "@/components/site/HomeSections";
 
 export const Route = createFileRoute("/")({
   component: HomePage,
@@ -42,17 +37,14 @@ function HomePage() {
   return (
     <SiteLayout>
       <Hero />
-      <MetricsStrip />
-      <PaymentMethodsSection />
-      <PaymentDemoSection />
+      <PaymentPartners />
+      <ServicesGrid />
+      <WhyChoose />
+      <StatsCounter />
       <PaymentLinksSection />
-      <DashboardPreviewSection />
-      <InternationalSection />
-      <DeveloperSection />
-      <SecuritySection />
-      <BusinessSection />
-      <AnalyticsSection />
-      <PricingPreviewSection />
+      <Testimonials />
+      <FAQ />
+      <ContactSection />
       <CTASection />
     </SiteLayout>
   );

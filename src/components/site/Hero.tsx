@@ -16,39 +16,38 @@ export function Hero() {
           <div>
             <div className="inline-flex items-center gap-2 rounded-full border border-electric/20 bg-electric/5 px-3 py-1 text-xs font-semibold text-electric mb-6">
               <Sparkles className="h-3.5 w-3.5" />
-              The Future of Business Payments
+              Payments. Jatpat. Anywhere.
             </div>
-            <h1 className="text-5xl sm:text-6xl lg:text-7xl font-bold tracking-tight leading-[1.02]">
-              Accept Payments. <br />
-              Grow{" "}
+            <h1 className="font-display text-5xl sm:text-6xl lg:text-7xl font-bold tracking-tight leading-[1.02]">
+              Fast, Secure &{" "}
               <span className="relative inline-block">
                 <span className="text-gradient bg-[length:200%_100%] animate-shimmer-text">
-                  Without Borders
+                  Smart Digital
                 </span>
                 <span className="absolute -bottom-1 left-0 h-1 w-full rounded-full bg-gradient-brand opacity-60 blur-sm" />
-              </span>
-              .
+              </span>{" "}
+              Payments
             </h1>
             <p className="mt-6 text-lg sm:text-xl text-muted-foreground max-w-xl leading-relaxed">
-              Jatpat Pay gives modern businesses a powerful platform to manage
-              payments, create payment links, track transactions, and prepare
-              for global payment acceptance.
+              All your payment solutions in one place. Jatpat Pay powers UPI,
+              recharges, bills, AEPS, payouts, and global acceptance for
+              individuals, merchants, and businesses.
             </p>
             <div className="mt-8 flex flex-wrap gap-3">
               <Link to="/signup">
-                <Button size="lg" className="bg-gradient-brand text-white shadow-glow hover:opacity-90 h-12 px-6 text-base">
-                  Start Accepting Payments <ArrowRight className="ml-2 h-4 w-4" />
+                <Button size="lg" className="bg-gradient-brand text-white shadow-glow hover:opacity-90 h-12 px-6 text-base font-[var(--font-button)]">
+                  Get Started <ArrowRight className="ml-2 h-4 w-4" />
                 </Button>
               </Link>
-              <Link to="/payments">
-                <Button size="lg" variant="outline" className="h-12 px-6 text-base border-navy/20">
-                  Explore Jatpat Pay
+              <a href="#contact">
+                <Button size="lg" variant="outline" className="h-12 px-6 text-base border-navy/20 font-[var(--font-button)]">
+                  Contact Us
                 </Button>
-              </Link>
+              </a>
             </div>
 
             <div className="mt-10 flex flex-wrap items-center gap-x-8 gap-y-3 text-sm font-medium text-foreground/70">
-              {["Fast Integration", "Developer Friendly", "Global Payment Ready"].map((t) => (
+              {["Instant UPI", "Bank-Level Security", "24×7 Support"].map((t) => (
                 <div key={t} className="flex items-center gap-2">
                   <span className="inline-block h-2 w-2 rounded-full bg-gradient-brand" /> {t}
                 </div>
