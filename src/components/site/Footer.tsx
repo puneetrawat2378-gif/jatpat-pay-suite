@@ -1,6 +1,7 @@
 import { Link } from "@tanstack/react-router";
 import { Logo } from "@/components/brand/Logo";
-import { Twitter, Linkedin, Github } from "lucide-react";
+import { Instagram, Youtube, Phone, MapPin, Mail } from "lucide-react";
+import { CONTACT } from "./ContactSection";
 
 const cols = [
   {
@@ -50,19 +51,32 @@ export function Footer() {
           <div className="lg:col-span-2 space-y-4">
             <Logo variant="dark" />
             <p className="text-sm text-white/60 max-w-xs">
-              Payments. Jatpat. Anywhere. Accept payments from India and across
-              the world with one powerful platform.
+              Payments. Jatpat. Anywhere. Digital payment solutions for
+              individuals, merchants, and businesses across India and the world.
             </p>
+            <ul className="space-y-2 pt-2 text-sm text-white/70">
+              <li className="flex items-start gap-2">
+                <Phone className="h-4 w-4 mt-0.5 text-electric" />
+                <a href={`tel:${CONTACT.phoneRaw}`} className="hover:text-white">{CONTACT.phone}</a>
+              </li>
+              <li className="flex items-start gap-2">
+                <Mail className="h-4 w-4 mt-0.5 text-electric" />
+                <a href={`mailto:${CONTACT.email}`} className="hover:text-white">{CONTACT.email}</a>
+              </li>
+              <li className="flex items-start gap-2">
+                <MapPin className="h-4 w-4 mt-0.5 text-electric shrink-0" />
+                <span>{CONTACT.address}</span>
+              </li>
+            </ul>
             <div className="flex gap-3 pt-2">
-              {[Twitter, Linkedin, Github].map((Icon, i) => (
-                <a
-                  key={i}
-                  href="#"
-                  className="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-white/10 text-white/70 hover:text-white hover:bg-white/5"
-                >
-                  <Icon className="h-4 w-4" />
-                </a>
-              ))}
+              <a href={CONTACT.instagram} target="_blank" rel="noreferrer" aria-label="Instagram"
+                className="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-white/10 text-white/70 hover:text-white hover:bg-white/5">
+                <Instagram className="h-4 w-4" />
+              </a>
+              <a href={CONTACT.youtube} target="_blank" rel="noreferrer" aria-label="YouTube"
+                className="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-white/10 text-white/70 hover:text-white hover:bg-white/5">
+                <Youtube className="h-4 w-4" />
+              </a>
             </div>
           </div>
           {cols.map((col) => (
