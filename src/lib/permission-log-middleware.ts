@@ -36,12 +36,18 @@ function logIfPermissionDenied(err: unknown) {
     /permission denied for (?:table|function|relation|schema|view|sequence) /i.test(
       message ?? "",
     );
-  if (!isPermissionDenied) return;
+  const rlsViolation =
+    pg?.code === "42501" &&
+    /row-level security policy/i.test(message ?? "");
+  if (!isPermissionDenied && !rlsViolation) return;
 
   const target = parseTarget(message);
+  const rls = parseRls(message);
   let url: string | undefined;
   let method: string | undefined;
   let userId: string | undefined;
+  let role: string | undefined;
+  let email: string | undefined;
   try {
     const req = getRequest();
     url = req.url;
@@ -51,18 +57,30 @@ function logIfPermissionDenied(err: unknown) {
   }
   try {
     const auth = getRequestHeader("authorization");
-    if (auth?.startsWith("Bearer ")) userId = decodeSub(auth.slice(7));
+    if (auth?.startsWith("Bearer ")) {
+      const claims = decodeJwt(auth.slice(7));
+      userId = typeof claims?.sub === "string" ? claims.sub : undefined;
+      role = typeof claims?.role === "string" ? claims.role : undefined;
+      email = typeof claims?.email === "string" ? claims.email : undefined;
+    }
   } catch {
     /* header not available */
   }
+  if (!role) role = "anon"; // no bearer → PostgREST executes as anon
 
   console.error("[permission-denied]", {
     method,
     url,
     userId,
+    email,
+    dbRole: role,
     code: pg?.code ?? "42501",
     targetKind: target?.kind,
+    targetSchema: target?.schema,
     targetName: target?.name,
+    rlsPolicy: rls?.policy,
+    rlsCommand: rls?.command,
+    rlsTable: rls?.table,
     message,
     details: pg?.details,
     hint: pg?.hint,
@@ -81,20 +99,43 @@ function extractPgLike(err: unknown): MaybePgError | null {
 function parseTarget(message?: string) {
   if (!message) return null;
   const m = message.match(
-    /permission denied for (table|function|relation|schema|view|sequence)\s+([^\s"]+)/i,
+    /permission denied for (table|function|relation|schema|view|sequence)\s+"?([^\s".]+)(?:\.([^\s".]+))?"?/i,
   );
   if (!m) return null;
-  return { kind: m[1].toLowerCase(), name: m[2] };
+  const kind = m[1].toLowerCase();
+  const first = m[2];
+  const second = m[3];
+  return second
+    ? { kind, schema: first, name: second }
+    : { kind, schema: undefined as string | undefined, name: first };
 }
 
-function decodeSub(jwt: string): string | undefined {
+function parseRls(message?: string) {
+  if (!message) return null;
+  // "new row violates row-level security policy "P" for table "T""
+  const withPolicy = message.match(
+    /row-level security policy "([^"]+)"(?:\s+for\s+table\s+"([^"]+)")?/i,
+  );
+  const command = /new row violates/i.test(message)
+    ? "INSERT/UPDATE"
+    : /violates row-level security/i.test(message)
+    ? "SELECT/UPDATE/DELETE"
+    : undefined;
+  if (!withPolicy && !command) return null;
+  return {
+    policy: withPolicy?.[1],
+    table: withPolicy?.[2],
+    command,
+  };
+}
+
+function decodeJwt(jwt: string): Record<string, unknown> | undefined {
   const parts = jwt.split(".");
   if (parts.length < 2) return undefined;
   try {
-    const payload = JSON.parse(
+    return JSON.parse(
       Buffer.from(parts[1].replace(/-/g, "+").replace(/_/g, "/"), "base64").toString("utf8"),
-    );
-    return typeof payload.sub === "string" ? payload.sub : undefined;
+    ) as Record<string, unknown>;
   } catch {
     return undefined;
   }
