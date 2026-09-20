@@ -120,7 +120,8 @@ export default async function handler(request: Request): Promise<Response> {
   if (request.method !== "POST") return json({ error: "Method not allowed" }, 405);
 
   const expectedToken = Deno.env.get("GMAIL_PUBSUB_VERIFICATION_TOKEN");
-  if (expectedToken && request.headers.get("x-goog-channel-token") !== expectedToken)
+  const providedToken = new URL(request.url).searchParams.get("token");
+  if (expectedToken && providedToken !== expectedToken)
     return json({ error: "Invalid verification token" }, 401);
 
   const body = await request.json().catch(() => null);
@@ -192,13 +193,11 @@ export default async function handler(request: Request): Promise<Response> {
     }
   }
 
-  await supabase
-    .from("gmail_automation_state")
-    .upsert({
-      mailbox: emailAddress,
-      last_history_id: historyId,
-      updated_at: new Date().toISOString(),
-    });
+  await supabase.from("gmail_automation_state").upsert({
+    mailbox: emailAddress,
+    last_history_id: historyId,
+    updated_at: new Date().toISOString(),
+  });
   return json({
     ok: true,
     mailbox: emailAddress,
